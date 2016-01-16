@@ -1,5 +1,7 @@
 # espress NodeMCU http-server
 
+Version: 0.1.0
+
 Ultra-Lightweight and modular Node.js like http server for NodeMCU.  
 Emphasizes code-as-a-config.
 
@@ -33,7 +35,7 @@ Transfer the relevant content with any upload tool (we recommend using https://g
  ```
 
 ### Req/Res API
- #### Request
+#### Request
  req = {  
   params,  
   headers,  
@@ -41,29 +43,29 @@ Transfer the relevant content with any upload tool (we recommend using https://g
   body  
  }
  
- ##### req.params
+##### req.params
  Holds the querystring parameters.
  Example: for http://host/api/computers?id=1234  
  ```lua
    local id = tonumber(req.params["id"]) -- 1234
  ```
  
- ##### req.headers
+##### req.headers
  Holds the request headers.  
  N.B.: header name is stored in lower-case
  ```lua
    local contenttype = req.headers["content-type"] -- "application/json"
  ```
  
- ##### req.method
+##### req.method
  Contains the request method: "GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"
  
- ##### req.body
+##### req.body
  Contains the body parsed into a string.  
  N.B.: You have the liberty of parsing this string to whatever you feel comfortable with. It is a voluntary choice not to parse it into JSON or other formats.
- Sample parsers for form and json are available in the samples.  
+ Sample parsers for form and json will be available soon in the samples.  
  
- #### Response
+#### Response
  
  Example :
  res = {
@@ -75,10 +77,10 @@ Transfer the relevant content with any upload tool (we recommend using https://g
   addheader  
  }
  
- ##### res.conn
+##### res.conn
  The http connection socket. Please refer to NodeMCU's API for more details
   
- ##### res.send
+##### res.send
  Send payload in response and close connection after. The payload is sent in one chunk and length should not exceed 1460 bytes.
  If payload is bigger than 1460, please use res.sendfile instead.
  
@@ -88,7 +90,7 @@ Transfer the relevant content with any upload tool (we recommend using https://g
   res:send(content)
  ```
  
- ##### res.sendfile
+##### res.sendfile
  Send static file in response and close connection after. The payload is sent into multiple chunks of 1460 bytes, and should be used to process all static content. 
  
  Example:
@@ -96,7 +98,7 @@ Transfer the relevant content with any upload tool (we recommend using https://g
    res:sendfile("static/404-not-found.html")
  ```
  
- ##### res.statuscode
+##### res.statuscode
  Sets the response http statuscode.
   
  Example:
@@ -104,10 +106,10 @@ Transfer the relevant content with any upload tool (we recommend using https://g
    res.statuscode = 102
  ```
  
- ##### res.headers
+##### res.headers
  Contains the response headers. Use for read-only. To add or edit response headers, rather use res.addheader
  
- ##### res.addheader
+##### res.addheader
  Add or edit response header.
  
  Example:  
@@ -136,7 +138,7 @@ Available plugins are:
  
  The following responses can be expected :  
  * **400 BAD-REQUEST** if Api-Key header is not present  
- * **401 UNAUTHORIZED** if Api-Key header value does not match the one in **auth-api-key-conf.lua**    
+ * **401 UNAUTHORIZED** if Api-Key header value does not match the one in the options **{apikey = "1234-abcd"}**    
  * Forward to next handler if everything went well
  
 #### Plugin routes-auto
