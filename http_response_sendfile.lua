@@ -2,13 +2,12 @@
 -- send file
 ------------------------------------------------------------------------------
 return function(res, filename, status)
- print("Before send : " .. node.heap())
  local buffersize = 512
  local offset = 0
  local buf
 
  if not file.open(filename, "r") then
-  local f = loadfile("http_not_found.lua")
+  local f = loadfile("http_not_found.lc")
   f()(res)
   f = nil
  else

@@ -11,13 +11,13 @@ return function(conn)
  -- send response
  ------------------------------------------------------------------------------
  local send = function(res, data, status)
-  local f = loadfile("http_response_send.lua")
+  local f = loadfile("http_response_send.lc")
   f()(res, data, status)
   f = nil
  end
 
  local sendfile = function(res, filename, status)
-  local f = loadfile("http_response_sendfile.lua")
+  local f = loadfile("http_response_sendfile.lc")
   f()(res, filename, status)
   f = nil
  end

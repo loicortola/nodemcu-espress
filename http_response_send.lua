@@ -3,7 +3,6 @@
 ------------------------------------------------------------------------------
 return function(res, data, status)
  local conn = res.conn
- print(node.heap())
  --   write protocol headers
  conn:send("HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n")
  --   write response headers

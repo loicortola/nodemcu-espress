@@ -7,4 +7,4 @@ local port = 80
 local server = espress.createserver(port)
 
 -- use auto router (all files uploaded as static/*.* will be read)
-server:use("routes_auto.lua")
+server:use("routes_auto.lc")

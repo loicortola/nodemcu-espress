@@ -12,6 +12,8 @@ do
   return function(conn)
    print("Begin request: " .. node.heap())
 
+   local connectionthread
+   
    -- Keep reference to callback
    local req, res, ondisconnect, onheader, ondata, onreceive
    local buf = ""
@@ -49,21 +51,18 @@ do
    ondata = function(conn, chunk)
     -- Prevent MCU from resetting
     tmr.wdclr()
-    collectgarbage("collect")
     if chunk then
      req.body = req.body .. chunk
      if #req.body >= bodylength then
       local f = loadfile(self.handlers.handler)
       f()(req, res, self.handlers.next, self.handlers.opts)
       f = nil
-      collectgarbage("collect")
      end
     end
    end
 
    -- Metadata parser
    onreceive = function(conn, chunk)
-    collectgarbage("collect")
     -- concat chunks in buffer
     buf = buf .. chunk
     -- Read line from chunk
@@ -77,10 +76,10 @@ do
 
      if parsedlines == 0 then
       -- FIRST LINE
-      local f = loadfile('http_request.lua')
+      local f = loadfile('http_request.lc')
       req = f()(conn, line)
       f = nil
-      local f = loadfile('http_response.lua')
+      local f = loadfile('http_response.lc')
       res = f()(conn)
       f = nil
       collectgarbage("collect")
@@ -99,7 +98,6 @@ do
       -- Buffer no longer needed
       buf = nil
       if bodylength == 0 then
-       collectgarbage("collect")
        -- Handle request if no body present
        local f = loadfile(self.handlers.handler)
        f()(req, res, self.handlers.next, self.handlers.opts)
@@ -108,6 +106,7 @@ do
       else
        -- Change receive hook to body parser if body present
        conn:on("receive", ondata)
+       ondata(conn, chunk)
        onreceive = nil
       end
       break
@@ -147,7 +146,6 @@ do
   end
   -- Listen
   srv:listen(port, httphandler(hdlr))
-  print(node.heap())
   print("Server listening on port " .. tostring(port))
   return hdlr
  end

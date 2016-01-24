@@ -18,7 +18,8 @@ Features:
  
 ## Setup
 
-Transfer the relevant content with any upload tool (we recommend using https://github.com/kmpm/nodemcu-uploader)
+Transfer the relevant content with any upload tool (we recommend using https://www.npmjs.com/package/nodemcu-tool).  
+A binary pre-compiled version is available in bin/ folder. 
 
 ## Recipes
 
@@ -30,8 +31,8 @@ Transfer the relevant content with any upload tool (we recommend using https://g
   local server = espress.createserver(port)
   -- Declare desired plugins one by one
   -- syntax is server:use("plugin" [, opts)
-  server:use("auth_api_key.lua", {apikey = "1234-abcd", includes = "/api"})
-  server:use("routes_auto.lua")
+  server:use("auth_api_key.lc", {apikey = "1234-abcd", includes = "/api"})
+  server:use("routes_auto.lc")
  ```
 
 ### Req/Res API
@@ -133,7 +134,7 @@ Available plugins are:
  * excludes: a uri prefix to which auth will be bypassed (will include all others)  
  
  ```lua
-  server:use("auth_api_key.lua", {apikey = "1234-abcd", includes = "/api"})
+  server:use("auth_api_key.lc", {apikey = "1234-abcd", includes = "/api"})
  ```
  
  The following responses can be expected :  
@@ -156,7 +157,7 @@ static/logo.png
 static/script.js  
 
 ##### Dynamic content
-Your API scripts should be stored as routes/path.method.lua (example: routes/foo.post.lua, routes/bar.get.lua ...) and should hold the following function:  
+Your API scripts should be stored as routes/path.method.lc (example: routes/foo.post.lc, routes/bar.get.lc ...) and should hold the following function:  
  ```lua
  return function(req, res)
   -- your code here
@@ -168,8 +169,8 @@ Your API scripts should be stored as routes/path.method.lua (example: routes/foo
 
 The scripts will be available under the following uri: host/api/path  
 For instance: 
-routes/foo.get.lua <=> [GET] http://host/api/foo  
-routes/bar.post.lua <=> [POST] http://host/api/bar  
+routes/foo.get.lc <=> [GET] http://host/api/foo  
+routes/bar.post.lc <=> [POST] http://host/api/bar  
 
 Don't forget to take a look at the req and res API.  
 Samples are available into the sample/ subfolder
@@ -179,9 +180,9 @@ This plugin uses a node.js like route handler.
 Declarations are made this way:
  ```lua
  local router = require 'router'
- router.get("/computers", "routes/computers.get.lua")
- router.post("/user/register", "routes/register.get.lua")
- router.delete("/user/employee", "routes/employee-revoke.delete.lua")
+ router.get("/computers", "routes/computers.get.lc")
+ router.post("/user/register", "routes/register.get.lc")
+ router.delete("/user/employee", "routes/employee-revoke.delete.lc")
  return router.handler 
  ```
 
