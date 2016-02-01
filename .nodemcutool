@@ -1,0 +1,6 @@
+{
+    "baudrate": "9600",
+    "port": "com4",
+    "optimize": false,
+    "compile": false
+}
