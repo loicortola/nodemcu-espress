@@ -5,21 +5,24 @@ return function(res, filename, status)
  local buffersize = 512
  local offset = 0
  local buf
+ local more
 
  if not file.open(filename, "r") then
   local f = loadfile("http_not_found.lc")
   f()(res)
   f = nil
  else
-  res.conn:send("HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n")
+  buf="HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
   --   Write response headers
   res:addheader("Server", "NodeMCU")
   res:addheader("Transfer-Encoding", "chunked")
   for key, value in pairs(res.headers) do
    -- send header
-   res.conn:send(key .. ": " .. value .. "\r\n")
+   buf=buf..key .. ": " .. value .. "\r\n"
   end
-  res.conn:send("\r\n")
+  buf=buf.."\r\n"
+  res.conn:send(buf)
+  more=true
 
   -- Send file body
   local function sendnextchunk()
@@ -27,11 +30,14 @@ return function(res, filename, status)
    file.seek("set", offset)
    buf = file.read(buffersize)
    res.conn:send(("%X\r\n"):format(#buf) .. buf .. "\r\n")
+   more=(#buf == buffersize)
+   if more then 
+      offset = offset + buffersize 
+   end
   end
 
   res.conn:on("sent", function(conn)
-   if (#buf == buffersize) then
-    offset = offset + buffersize
+   if (more) then
     sendnextchunk()
    else
     -- Manually free resources for gc
@@ -45,7 +51,5 @@ return function(res, filename, status)
     conn:close()
    end
   end)
-
-  sendnextchunk()
  end
 end

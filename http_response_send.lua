@@ -3,8 +3,9 @@
 ------------------------------------------------------------------------------
 return function(res, data, status)
  local conn = res.conn
+ local buf
  --   write protocol headers
- conn:send("HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n")
+ buf="HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
  --   write response headers
  res:addheader("Server", "NodeMCU")
  if data then
@@ -12,14 +13,17 @@ return function(res, data, status)
  end
  for key, value in pairs(res.headers) do
   -- send header
-  res.conn:send(key .. ": " .. value .. "\r\n")
+  buf=buf .. key .. ": " .. value .. "\r\n"
  end
- conn:send("\r\n")
+ buf=buf.."\r\n"
  --   write body if relevant
  if data then
-  conn:send(data)
-  conn:send("\r\n")
+  buf=buf..data
+  buf=buf.."\r\n"
  end
+ -- send 
+ conn:send(buf)
+ buf=nil
  -- close connection
  conn:close()
 end
