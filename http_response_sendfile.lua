@@ -12,17 +12,17 @@ return function(res, filename, status)
   f()(res)
   f = nil
  else
-  buf="HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
+  buf = "HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
   --   Write response headers
   res:addheader("Server", "NodeMCU")
   res:addheader("Transfer-Encoding", "chunked")
   for key, value in pairs(res.headers) do
    -- send header
-   buf=buf..key .. ": " .. value .. "\r\n"
+   buf = buf .. key .. ": " .. value .. "\r\n"
   end
-  buf=buf.."\r\n"
+  buf = buf .. "\r\n"
   res.conn:send(buf)
-  more=true
+  more = true
 
   -- Send file body
   local function sendnextchunk()
@@ -30,9 +30,9 @@ return function(res, filename, status)
    file.seek("set", offset)
    buf = file.read(buffersize)
    res.conn:send(("%X\r\n"):format(#buf) .. buf .. "\r\n")
-   more=(#buf == buffersize)
-   if more then 
-      offset = offset + buffersize 
+   more = (#buf == buffersize)
+   if more then
+    offset = offset + buffersize
    end
   end
 

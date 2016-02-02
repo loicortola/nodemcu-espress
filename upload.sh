@@ -15,3 +15,10 @@ nodemcu-tool upload status-codes/http-403 --port $1
 nodemcu-tool upload status-codes/http-404 --port $1
 nodemcu-tool upload status-codes/http-405 --port $1
 nodemcu-tool upload status-codes/http-503 --port $1
+nodemcu-tool upload mime-types/type-css
+nodemcu-tool upload mime-types/type-html
+nodemcu-tool upload mime-types/type-jpg
+nodemcu-tool upload mime-types/type-js
+nodemcu-tool upload mime-types/type-json
+nodemcu-tool upload mime-types/type-png
+nodemcu-tool upload mime-types/type-ico
