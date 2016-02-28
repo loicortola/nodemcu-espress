@@ -9,6 +9,7 @@ nodemcu-tool upload plugins/auth_api_key.lua --port $1 --compile --optimize
 nodemcu-tool upload plugins/router.lua --port $1 --compile --optimize
 nodemcu-tool upload plugins/routes_auto.lua --port $1 --compile --optimize
 nodemcu-tool upload status-codes/http-200 --port $1
+nodemcu-tool upload status-codes/http-302 --port $1
 nodemcu-tool upload status-codes/http-400 --port $1
 nodemcu-tool upload status-codes/http-401 --port $1
 nodemcu-tool upload status-codes/http-403 --port $1

@@ -8,11 +8,13 @@
 @call nodemcu-tool upload plugins/router.lua --compile --optimize
 @call nodemcu-tool upload plugins/routes_auto.lua --compile --optimize
 @call nodemcu-tool upload status-codes/http-200
+@call nodemcu-tool upload status-codes/http-302
 @call nodemcu-tool upload status-codes/http-400
 @call nodemcu-tool upload status-codes/http-401
 @call nodemcu-tool upload status-codes/http-403
 @call nodemcu-tool upload status-codes/http-404
 @call nodemcu-tool upload status-codes/http-405
+@call nodemcu-tool upload status-codes/http-500
 @call nodemcu-tool upload status-codes/http-503
 @call nodemcu-tool upload mime-types/type-css
 @call nodemcu-tool upload mime-types/type-html
