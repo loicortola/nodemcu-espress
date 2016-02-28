@@ -25,8 +25,7 @@ local handler = function(req, res, next, opts)
   f()(req, res)
   f = nil
  else
-  -- [GET] /index.html will return static/index.html 
-  print(getextension(url))
+  -- [GET] /index.html will return static/index.html
   local f = loadfile("type-" .. getextension(url))
   res:addheader("Content-Type", f())
   f = nil

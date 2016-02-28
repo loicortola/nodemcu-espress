@@ -5,8 +5,8 @@ return function(res, filename, status)
  local buffersize = 512
  local offset = 0
  local buf
- local more
-
+ local more = true
+ print("Opening file " .. filename)
  if not file.open(filename, "r") then
   res.statuscode = 404
   res:send("404 - Not Found")
@@ -21,7 +21,6 @@ return function(res, filename, status)
   end
   buf = buf .. "\r\n"
   res.conn:send(buf)
-  more = true
 
   -- Send file body
   local function sendnextchunk()
@@ -32,6 +31,8 @@ return function(res, filename, status)
    more = (#buf == buffersize)
    if more then
     offset = offset + buffersize
+   else
+    file.close()
    end
   end
 
@@ -46,7 +47,6 @@ return function(res, filename, status)
     sendnextchunk = nil
     -- Close connection
     conn:send("0\r\n\r\n")
-    file.close()
     conn:close()
    end
   end)
