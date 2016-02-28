@@ -1,19 +1,19 @@
 # Sample simple-api
 
-This sample serves custom endpoints configured in routes_custom.lua, and secured by an api-key.
+This sample serves custom endpoints configured in routes_custom.lc, and secured by an api-key.
 
 
 ## Procedure
 Upload the following files to your NodeMCU:
 
 1. Espress base files
- * plugins/auth_api_key.lua => auth_api_key.lua
- * espress.lua  
- * http_not_found.lua  
- * http_request.lua  
- * http_response.lua  
- * http_response_send.lua  
- * plugins/router.lua => router.lua
+ * plugins/auth_api_key.lc => auth_api_key.lc
+ * espress.lc  
+ * http_default_handler.lc  
+ * http_request.lc  
+ * http_response.lc  
+ * http_response_send.lc  
+ * plugins/router.lc => router.lc
  
 2. Relevant Espress status-codes
  * status-codes/http-200 => http-200
@@ -22,13 +22,13 @@ Upload the following files to your NodeMCU:
  * status-codes/http-405 => http-405
 
 3. Sample files
- * init.lua  
- * server.lua  
- * routes_custom.lua  
- * routes/askme.post.lua  => routes/askme.post.lua
- * routes/hello.get.lua  => routes/hello.get.lua
+ * init**.lua**  
+ * server.lc  
+ * routes_custom.lc  
+ * routes/askme.post.lc  => routes/askme.post.lc
+ * routes/hello.get.lc  => routes/hello.get.lc
  
-Replace the wifi settings with your own in init.lua
+Replace the wifi settings with your own in **init.lua**
 
 Access both resources like this:  
 

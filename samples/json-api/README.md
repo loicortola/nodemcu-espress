@@ -1,13 +1,13 @@
 # Sample simple-api
 
-This sample serves all endpoints in the routes/ folder, secured by an api-key.
+This sample serves all endpoints in the routes/ folder, and returns application/json results with CJSON.
 
+**N.B.: You need to have a NodeMCU built with the CJSON module for this sample to work.**
 
 ## Procedure
 Upload the following files to your NodeMCU:
 
 1. Espress base files
- * plugins/auth_api_key.lc => auth_api_key.lc
  * espress.lc  
  * http_default_handler.lc  
  * http_request.lc  
@@ -33,6 +33,9 @@ Replace the wifi settings with your own in **init.lua**
 Access both resources like this:  
 
 [GET] http://IP/api/hello  
-[POST] http://IP/api/askme  
-
-**N.B.: Don't forget to add an Api-Key header (default value is 1234-my-key)**
+[POST] http://IP/api/askme  with the following JSON body: 
+```json
+{ 
+  "question": "How are you?"
+}
+```

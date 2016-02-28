@@ -8,9 +8,8 @@ return function(res, filename, status)
  local more
 
  if not file.open(filename, "r") then
-  local f = loadfile("http_not_found.lc")
-  f()(res)
-  f = nil
+  res.statuscode = 404
+  res:send("404 - Not Found")
  else
   buf = "HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
   --   Write response headers

@@ -1,6 +1,6 @@
 #/bin/bash
 nodemcu-tool download espress.lc
-nodemcu-tool download http_not_found.lc
+nodemcu-tool download http_default_handler.lc
 nodemcu-tool download http_request.lc
 nodemcu-tool download http_response_send.lc
 nodemcu-tool download http_response_sendfile.lc

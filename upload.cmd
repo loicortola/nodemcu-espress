@@ -1,5 +1,5 @@
 @call nodemcu-tool upload espress.lua --compile --optimize
-@call nodemcu-tool upload http_not_found.lua --compile --optimize
+@call nodemcu-tool upload http_default_handler.lua --compile --optimize
 @call nodemcu-tool upload http_request.lua --compile --optimize
 @call nodemcu-tool upload http_response_send.lua --compile --optimize
 @call nodemcu-tool upload http_response_sendfile.lua --compile --optimize

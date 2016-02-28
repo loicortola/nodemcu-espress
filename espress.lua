@@ -32,7 +32,7 @@ do
     parsedlines = nil
     bodylength = nil
     collectgarbage("collect")
-    print("Garbage Collector is sweeping " .. node.heap())
+    print("Garbage Collector is sweeping. Available memory is now " .. node.heap() .. " bytes.")
    end
 
    -- Header parser
@@ -55,8 +55,15 @@ do
      req.body = req.body .. chunk
      if #req.body >= bodylength then
       local f = loadfile(self.handlers.handler)
-      f()(req, res, self.handlers.next, self.handlers.opts)
+      local next = self.handlers.next
+      local success, err = pcall(function() f()(req, res, next, self.handlers.opts) end)
+      if not success then
+       print("Error occured during execution: " .. err)
+       res.statuscode = 500
+       res:send("500 - Internal Server Error: " .. err)
+      end
       f = nil
+      next = nil
      end
     end
    end
@@ -65,14 +72,18 @@ do
    onreceive = function(conn, chunk)
     -- concat chunks in buffer
     buf = buf .. chunk
+    -- this will be used to remove headers from request body
+    local headerslength = 0
     -- Read line from chunk
     while #buf > 0 do
+     -- Ensure current line is complete
      local e = buf:find("\r\n", 1, true)
      -- Leave if line not done
      if not e then break end
-
+     -- Parse current line
      local line = buf:sub(1, e - 1)
      buf = buf:sub(e + 2)
+     headerslength = headerslength + e + 1
 
      if parsedlines == 0 then
       -- FIRST LINE
@@ -82,7 +93,6 @@ do
       local f = loadfile('http_response.lc')
       res = f()(conn)
       f = nil
-      collectgarbage("collect")
      elseif #line > 0 then
       -- HEADER LINES
       -- Parse header
@@ -95,18 +105,24 @@ do
      else
       -- BODY
       tmr.wdclr()
+      local body = chunk:sub(headerslength + 1)
       -- Buffer no longer needed
       buf = nil
       if bodylength == 0 then
        -- Handle request if no body present
        local f = loadfile(self.handlers.handler)
-       f()(req, res, self.handlers.next, self.handlers.opts)
-       f = nil
-       collectgarbage("collect")
+       local next = self.handlers.next
+       local success, err = pcall(function() f()(req, res, next, self.handlers.opts) end)
+       if not success then
+        print("Error occured during execution: " .. err)
+        res.statuscode = 500
+        res:send("500 - Internal Server Error: " .. err)
+       end
+       --FIXME collectgarbage("collect")
       else
        -- Change receive hook to body parser if body present
        conn:on("receive", ondata)
-       ondata(conn, chunk)
+       ondata(conn, body)
        onreceive = nil
       end
       break
@@ -124,10 +140,7 @@ do
  -- HTTP server
  ------------------------------------------------------------------------------
  local srv
- local createserver = function(port)
-  if srv then srv:close()
-  end
-  srv = net.createServer(net.TCP, 5)
+ local createserver = function()
   local hdlr = {}
   hdlr.use = function(self, handler, opts)
    if self.handlers == nil then
@@ -135,9 +148,11 @@ do
    else
     local tmp = self.handlers
     while not (tmp == nil) do
+     print("In handler " .. tmp.handler)
      local next = tmp.next
      if next == nil then
-      self.handlers.next = { handler = handler, opts = opts }
+      print("Next handler " .. handler .. " will be after " .. tmp.handler)
+      tmp.next = { handler = handler, opts = opts }
      end
      tmp = next
     end
@@ -145,8 +160,20 @@ do
    collectgarbage("collect")
   end
   -- Listen
-  srv:listen(port, httphandler(hdlr))
-  print("Server listening on port " .. tostring(port))
+  hdlr.listen = function(self, port)
+   -- Last handler returns 404 - NOT FOUND
+   self:use("http_default_handler.lc")
+   -- Forget about "use" method after listening
+   self.use = nil
+   if srv then srv:close()
+   end
+   srv = net.createServer(net.TCP, 5)
+   srv:listen(port, httphandler(hdlr))
+   print("Server listening on port " .. tostring(port))
+   collectgarbage("collect")
+   print("Available memory is " .. node.heap() .. " bytes.")
+  end
+  
   return hdlr
  end
 

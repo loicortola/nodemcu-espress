@@ -1,6 +1,6 @@
 #/bin/sh
 nodemcu-tool upload espress.lua --port $1 --compile --optimize
-nodemcu-tool upload http_not_found.lua --port $1 --compile --optimize
+nodemcu-tool upload http_default_handler.lua --port $1 --compile --optimize
 nodemcu-tool upload http_request.lua --port $1 --compile --optimize
 nodemcu-tool upload http_response_send.lua --port $1 --compile --optimize
 nodemcu-tool upload http_response_sendfile.lua --port $1 --compile --optimize
@@ -14,11 +14,12 @@ nodemcu-tool upload status-codes/http-401 --port $1
 nodemcu-tool upload status-codes/http-403 --port $1
 nodemcu-tool upload status-codes/http-404 --port $1
 nodemcu-tool upload status-codes/http-405 --port $1
+nodemcu-tool upload status-codes/http-500 --port $1
 nodemcu-tool upload status-codes/http-503 --port $1
-nodemcu-tool upload mime-types/type-css
-nodemcu-tool upload mime-types/type-html
-nodemcu-tool upload mime-types/type-jpg
-nodemcu-tool upload mime-types/type-js
-nodemcu-tool upload mime-types/type-json
-nodemcu-tool upload mime-types/type-png
-nodemcu-tool upload mime-types/type-ico
+nodemcu-tool upload mime-types/type-css --port $1
+nodemcu-tool upload mime-types/type-html --port $1
+nodemcu-tool upload mime-types/type-jpg --port $1
+nodemcu-tool upload mime-types/type-js --port $1
+nodemcu-tool upload mime-types/type-json --port $1
+nodemcu-tool upload mime-types/type-png --port $1
+nodemcu-tool upload mime-types/type-ico --port $1

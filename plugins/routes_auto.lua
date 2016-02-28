@@ -14,7 +14,13 @@ local handler = function(req, res, next, opts)
  if url:sub(0, 4) == "/api" then
   -- [GET] /api/myservice will call routes/myservice.get.lc
   local filename = "routes" .. url:sub(5) .. "." .. req.method:lower() .. ".lc"
-  print(filename)
+  if not file.open(filename, "r") then 
+   print("File " .. filename .. " not found")
+   local f = loadfile(next.handler)
+   f()(req, res, next.next, next.opts)
+   f = nil
+   return nil
+  end
   local f = loadfile(filename)
   f()(req, res)
   f = nil

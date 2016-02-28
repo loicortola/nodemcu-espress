@@ -11,8 +11,9 @@ local handler = function(req, res, next, opts)
 
  -- apikey is declared in opts.apikey
  if bypass or (req.headers["api-key"] == opts.apikey) then
+  print("Api-Key header valid or bypassed")
   local f = loadfile(next.handler)
-  f()(req, res, next.next)
+  f()(req, res, next.next, next.opts)
   f = nil
  elseif req.headers["api-key"] == nil then
   res.statuscode = 400
