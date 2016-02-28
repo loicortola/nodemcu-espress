@@ -24,8 +24,8 @@
       text-decoration: underline;
     }
 
-    .message {
-      min-height: 2em;
+    table {
+      min-height: 11em;
       min-width: 300px;
       padding: 1em;
       border: 1px;
@@ -59,7 +59,44 @@
   <div class="center-div">
     <img src="lock-icon.png" width="128" height="128" style="display: block"/>
     <br/>
-    <div class="message">Registration completed successfully!</div>
+    <table>
+      <tr>
+        <td colspan="2">
+          <h2>Welcome</h2>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Username
+        </td>
+        <td>
+          <input type="text" name="username" placeholder="Enter username here"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Password
+        </td>
+        <td>
+          <input type="password" name="password" placeholder="Enter password here"/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Access-Rights
+        </td>
+        <td style="text-align: left">
+          <input type="checkbox" name="rights" value="ADMIN"> Administrator<br/>
+          <input type="checkbox" name="rights" value="AGENT"> Privileged Agent<br/>
+          <input type="checkbox" name="rights" value="USER" checked> User<br/>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" value="Register"/>
+        </td>
+      </tr>
+    </table>
   </div>
 
 </form>

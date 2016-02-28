@@ -1,6 +1,6 @@
 # Sample simple-api
 
-This sample serves all endpoints in the routes/ folder, and returns application/json results with CJSON.
+This sample serves all endpoints in the routes/ folder, and returns application/json results parsed along with CJSON.
 
 **N.B.: You need to have a NodeMCU built with the CJSON module for this sample to work.**
 
