@@ -31,4 +31,5 @@ Upload the following files to your NodeMCU:
 
 Replace the wifi settings with your own in **init.lua**
 
-Access the http://IP/hello.html file
+Access the http://IP/register.html file.
+The file posts the form on the http://IP/api/register endpoint, displays the form results in the console, and redirects to http://IP/register_success.html once everything is done.
