@@ -10,11 +10,10 @@ Features:
  * Easy service of static pages
  * Easy custom webservices with your own lua code
  * GET, POST PUT, DELETE, OPTIONS, HEAD supported
- * Querystring, headers, method and body parser
+ * Querystring, headers, method, form and body parser
  * Completely customizable. Make your own plugin work in a few seconds.
  * Inspired by Node.js Express
  * ESP8266 friendly : Can take between 10 and 20 Kb of memory for typical setups
- * Gatling-tool ready, with a scenario provided to test on your own API
  
 ## Setup
 
@@ -47,11 +46,12 @@ A binary pre-compiled version is available in bin/ folder.
  }
  
 ##### req.params
- Holds the querystring parameters.
+ Holds the querystring or the forms parameters.
  Example: for http://host/api/computers?id=1234  
  ```lua
    local id = tonumber(req.params["id"]) -- 1234
  ```
+ If forms or querystring have multiple values for the same key, req.params.field will be a table with all values stored within.
  
 ##### req.headers
  Holds the request headers.  
@@ -138,7 +138,7 @@ Available plugins are:
  * routes_custom : to perform advanced routing
  
 #### Plugin auth-api-key
- This plugin will intercept all requests and look for an Api-Key header.  
+ This plugin will intercept all requests and look for an X-Api-Key header OR an &api-key parameter in querystring.  
  Valid options for this plugin are:  
  * apikey: the desired apikey to secure  
  * includes: a uri prefix to which auth will be enabled (will exclude all others)  
@@ -149,8 +149,8 @@ Available plugins are:
  ```
  
  The following responses can be expected :  
- * **400 BAD-REQUEST** if Api-Key header is not present  
- * **401 UNAUTHORIZED** if Api-Key header value does not match the one in the options **{apikey = "1234-abcd"}**    
+ * **400 BAD-REQUEST** if neither the X-Api-Key header nor the api-key parameter were provided  
+ * **401 UNAUTHORIZED** if the provided value does not match the one in the options **{apikey = "1234-abcd"}**    
  * Forward to next handler if everything went well
  
 #### Plugin routes-auto

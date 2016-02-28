@@ -22,11 +22,11 @@ Upload the following files to your NodeMCU:
  * status-codes/http-405 => http-405
 
 3. Sample files
- * init**.lua**  
- * server.lc  
- * routes_custom.lc  
- * routes/askme.post.lc  => routes/askme.post.lc
- * routes/hello.get.lc  => routes/hello.get.lc
+ * **init.lua**  
+ * server.lua => server.lc  
+ * routes_custom.lua => routes_custom.lc  
+ * routes/askme.post.lua  => routes/askme.post.lc
+ * routes/hello.get.lua  => routes/hello.get.lc
  
 Replace the wifi settings with your own in **init.lua**
 

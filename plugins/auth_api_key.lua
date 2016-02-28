@@ -10,7 +10,7 @@ local handler = function(req, res, next, opts)
  end
 
  -- apikey is declared in opts.apikey
- if bypass or (req.headers["api-key"] == opts.apikey) then
+ if bypass or (req.headers["x-api-key"] == opts.apikey) or (req.params["api-key"] == opts.apikey)then
   print("Api-Key header valid or bypassed")
   local f = loadfile(next.handler)
   f()(req, res, next.next, next.opts)

@@ -23,7 +23,11 @@ Upload the following files to your NodeMCU:
 3. Sample files
  * init**.lua**  
  * server.lc  
- * static/hello.html  => static/hello.html
+ * static/register.post.lua => routes/register.post.lc  
+ * static/register.html  => static/register.html  
+ * static/register_success.html  => static/register_success.html  
+ * static/favicon.ico => static/favicon.ico  
+ * static/lock-icon.png => static/lock-icon.png  
 
 Replace the wifi settings with your own in **init.lua**
 

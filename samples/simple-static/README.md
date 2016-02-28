@@ -21,8 +21,8 @@ Upload the following files to your NodeMCU:
  * status-codes/http-500 => http-500
 
 3. Sample files
- * init**.lua**  
- * server.lc  
+ * **init.lua**  
+ * server.lua => server.lc    
  * static/hello.html  => static/hello.html
 
 Replace the wifi settings with your own in **init.lua**
