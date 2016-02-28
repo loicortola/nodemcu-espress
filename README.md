@@ -28,11 +28,13 @@ A binary pre-compiled version is available in bin/ folder.
  ```lua
   local espress = require 'espress'
   local port = 80
-  local server = espress.createserver(port)
+  -- Initialize a server creation (lazy)
+  local server = espress.createserver()
   -- Declare desired plugins one by one
   -- syntax is server:use("plugin" [, opts)
   server:use("auth_api_key.lc", {apikey = "1234-abcd", includes = "/api"})
   server:use("routes_auto.lc")
+  server:listen(port)
  ```
 
 ### Req/Res API
@@ -73,6 +75,7 @@ A binary pre-compiled version is available in bin/ folder.
   conn,  
   send,  
   sendfile,  
+  sendredirect,  
   statuscode,  
   headers,  
   addheader  
@@ -97,6 +100,14 @@ A binary pre-compiled version is available in bin/ folder.
  Example:
  ```lua
    res:sendfile("static/404-not-found.html")
+ ```
+ 
+##### res.sendredirect
+ Redirect user to another URL 
+ 
+ Example:
+ ```lua
+   res:sendredirect("/registration_success.html")
  ```
  
 ##### res.statuscode
