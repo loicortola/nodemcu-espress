@@ -21,6 +21,12 @@ return function(conn)
   f()(res, filename, status)
   f = nil
  end
+
+ local sendredirect = function(res, path)
+  res:addheader("Location", path)
+  res.statuscode = 302
+  res:send()
+ end
  
  return {
   conn = conn,
@@ -28,6 +34,7 @@ return function(conn)
   addheader = addheader,
   send = send,
   sendfile = sendfile,
+  sendredirect = sendredirect,
   statuscode = 200
  }
  
