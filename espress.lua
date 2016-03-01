@@ -18,18 +18,7 @@ do
  local processrequest
  -- Request buffer
  local requestbuffer
- 
- 
- -- Header parser
- local onheader = function(holder, k, v)
-  --print("Adding header " .. k)
-  if k == "content-length" then
-   holder.tmp.bodylength = tonumber(v)
-  end
-  -- Delegate to request object
-  holder.req:addheader(k, v)
- end
- 
+
  local getonreceive = function(holder)
 
   holder.tmp = {}
@@ -40,6 +29,7 @@ do
 
   -- Metadata parser
   return function(conn, chunk)
+   tmr.wdclr()
    -- concat chunks in buffer
    holder.tmp.buf = holder.tmp.buf .. chunk
    -- this will be used to remove headers from request body
@@ -70,11 +60,17 @@ do
      if k then
       -- Valid header
       k = k:lower()
-      onheader(holder, k, v)
+      --print("Adding header " .. k)
+      if k == "content-length" then
+       holder.tmp.bodylength = tonumber(v)
+      end
+      if not (k == "pragma" or k == "cache-control" or k == "connection") then
+       -- Add header into request (keep out some useless headers for memory)
+       holder.req:addheader(k, v)
+      end
      end
     else
      -- BODY
-     tmr.wdclr()
      local body = chunk:sub(holder.tmp.headerslength + 1)
      -- Buffer no longer needed
      chunk = nil
@@ -115,9 +111,10 @@ do
    end
   end
  end
- 
+
  local getondisconnect = function(holder)
   return function(conn)
+   tmr.wdclr()
    print("Finished chain for element " .. holder.id)
    holder.req = nil
    holder.res = nil
@@ -135,7 +132,6 @@ do
  ------------------------------------------------------------------------------
  local srv
  local createserver = function()
-  
   local f = loadfile('http_prototypes.lc')
   reqprototype, resprototype = f()
   f = loadfile('espress_init.lc')

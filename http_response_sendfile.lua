@@ -8,48 +8,54 @@ return function(res, filename, status)
  local more = true
  print("Opening file " .. filename)
  if not file.open(filename, "r") then
-  res.statuscode = 404
-  res:send("404 - Not Found")
- else
-  buf = "HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
-  --   Write response headers
-  res:addheader("Server", "NodeMCU")
-  res:addheader("Transfer-Encoding", "chunked")
-  res:addheader("Cache-Control", "private, max-age=31536000")
-  for key, value in pairs(res.headers) do
-   -- send header
-   buf = buf .. key .. ": " .. value .. "\r\n"
+  -- Try gzip
+  if file.open(filename .. ".gz", "r") then
+   res:addheader("Content-Encoding", "gzip")
+  else
+   res.statuscode = 404
+   res:send("404 - Not Found")
+   return
   end
-  buf = buf .. "\r\n"
-  res.conn:send(buf)
-
-  -- Send file body
-  local function sendnextchunk()
-   tmr.wdclr()
-   file.seek("set", offset)
-   buf = file.read(buffersize)
-   res.conn:send(("%X\r\n"):format(#buf) .. buf .. "\r\n")
-   more = (#buf == buffersize)
-   if more then
-    offset = offset + buffersize
-   else
-    file.close()
-   end
-  end
-
-  res.conn:on("sent", function(conn)
-   if (more) then
-    sendnextchunk()
-   else
-    -- Manually free resources for gc
-    buf = nil
-    buffersize = nil
-    offset = nil
-    sendnextchunk = nil
-    -- Close connection
-    conn:send("0\r\n\r\n")
-    conn:close()
-   end
-  end)
  end
+
+ -- A file was found, and opened
+ buf = "HTTP/1.1 " .. tostring(status or res.statuscode) .. " " .. dofile('http-' .. tostring(status or res.statuscode)) .. "\r\n"
+ --   Write response headers
+ res:addheader("Server", "NodeMCU")
+ res:addheader("Transfer-Encoding", "chunked")
+ for key, value in pairs(res.headers) do
+  -- send header
+  buf = buf .. key .. ": " .. value .. "\r\n"
+ end
+ buf = buf .. "\r\n"
+ res.conn:send(buf)
+
+ -- Send file body
+ local function sendnextchunk()
+  tmr.wdclr()
+  file.seek("set", offset)
+  buf = file.read(buffersize)
+  res.conn:send(("%X\r\n"):format(#buf) .. buf .. "\r\n")
+  more = (#buf == buffersize)
+  if more then
+   offset = offset + buffersize
+  else
+   file.close()
+  end
+ end
+
+ res.conn:on("sent", function(conn)
+  if (more) then
+   sendnextchunk()
+  else
+   -- Manually free resources for gc
+   buf = nil
+   buffersize = nil
+   offset = nil
+   sendnextchunk = nil
+   -- Close connection
+   conn:send("0\r\n\r\n")
+   conn:close()
+  end
+ end)
 end
