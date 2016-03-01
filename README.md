@@ -1,6 +1,6 @@
 # espress NodeMCU http-server
 
-Version: 0.3.0
+Version: 0.4.0
 
 Ultra-Lightweight and modular Node.js like http server for NodeMCU.  
 Emphasizes code-as-a-config.

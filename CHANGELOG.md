@@ -1,5 +1,11 @@
 ### Espress Changelog
 
+#### 0.4.0
+ Changes:
+ * Implemented request buffer for multiple request-handling
+ * Added gzip support
+ * Refactoring
+
 #### 0.3.0
  Changes:
  * Fixed body parsing bug
