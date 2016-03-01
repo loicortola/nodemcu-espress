@@ -8,88 +8,61 @@ do
  ------------------------------------------------------------------------------
  -- HTTP parser
  ------------------------------------------------------------------------------
- local executerequest = function(self, conn)
-  print("Begin request: " .. node.heap())
-  
-  -- Keep reference to callback
-  local req, res, ondisconnect, onheader, ondata, onreceive
-  local buf = ""
-  local parsedlines = 0
-  local bodylength = 0
-
-  ondisconnect = function(conn)
-   -- Manually set everything to nil to allow gc
-   req = nil
-   res = nil
-   ondisconnect = nil
-   onheader = nil
-   ondata = nil
-   onreceive = nil
-   buf = nil
-   parsedlines = nil
-   bodylength = nil
-   collectgarbage("collect")
-   print("Garbage Collector is sweeping. Available memory is now " .. node.heap() .. " bytes.")
+ -- Request prototype functions
+ local reqprototype
+ -- Response prototype functions
+ local resprototype
+ -- Request handler chain
+ local handlers
+ -- Chain processor
+ local processrequest
+ -- Request buffer
+ local requestbuffer
+ 
+ 
+ -- Header parser
+ local onheader = function(holder, k, v)
+  --print("Adding header " .. k)
+  if k == "content-length" then
+   holder.tmp.bodylength = tonumber(v)
   end
+  -- Delegate to request object
+  holder.req:addheader(k, v)
+ end
+ 
+ local getonreceive = function(holder)
 
-  -- Header parser
-  onheader = function(k, v)
-   --print("Adding header " .. k)
-   if k == "content-length" then
-    bodylength = tonumber(v)
-   end
-   -- Delegate to request object
-   if req then
-    req:addheader(k, v)
-   end
-  end
-
-  -- Body parser
-  ondata = function(conn, chunk)
-   -- Prevent MCU from resetting
-   tmr.wdclr()
-   if chunk then
-    req.body = req.body .. chunk
-    if #req.body >= bodylength then
-     local f = loadfile(self.handlers.handler)
-     local next = self.handlers.next
-     local success, err = pcall(function() f()(req, res, next, self.handlers.opts) end)
-     if not success then
-      print("Error occured during execution: " .. err)
-      res.statuscode = 500
-      res:send("500 - Internal Server Error: " .. err)
-     end
-     f = nil
-     next = nil
-    end
-   end
-  end
+  holder.tmp = {}
+  holder.tmp.buf = ""
+  holder.tmp.parsedlines = 0
+  holder.tmp.headerslength = 0
+  holder.tmp.bodylength = 0
 
   -- Metadata parser
-  onreceive = function(conn, chunk)
+  return function(conn, chunk)
    -- concat chunks in buffer
-   buf = buf .. chunk
+   holder.tmp.buf = holder.tmp.buf .. chunk
    -- this will be used to remove headers from request body
-   local headerslength = 0
    -- Read line from chunk
-   while #buf > 0 do
+   while #holder.tmp.buf > 0 do
     -- Ensure current line is complete
-    local e = buf:find("\r\n", 1, true)
+    local e = holder.tmp.buf:find("\r\n", 1, true)
     -- Leave if line not done
     if not e then break end
     -- Parse current line
-    local line = buf:sub(1, e - 1)
-    buf = buf:sub(e + 2)
-    headerslength = headerslength + e + 1
+    local line = holder.tmp.buf:sub(1, e - 1)
+    holder.tmp.buf = holder.tmp.buf:sub(e + 2)
+    holder.tmp.headerslength = holder.tmp.headerslength + e + 1
 
-    if parsedlines == 0 then
+    if holder.tmp.parsedlines == 0 then
      -- FIRST LINE
      local f = loadfile('http_request.lc')
-     req = f()(conn, line)
+     holder.req = f()(reqprototype, line)
      f = nil
      local f = loadfile('http_response.lc')
-     res = f()(conn)
+     holder.res = f()(resprototype, conn)
      f = nil
+     collectgarbage("collect")
     elseif #line > 0 then
      -- HEADER LINES
      -- Parse header
@@ -97,50 +70,63 @@ do
      if k then
       -- Valid header
       k = k:lower()
-      onheader(k, v)
+      onheader(holder, k, v)
      end
     else
      -- BODY
      tmr.wdclr()
-     local body = chunk:sub(headerslength + 1)
+     local body = chunk:sub(holder.tmp.headerslength + 1)
      -- Buffer no longer needed
-     buf = nil
-     if bodylength == 0 then
+     chunk = nil
+     holder.tmp.buf = nil
+     if holder.tmp.bodylength == 0 then
+      -- Clean unneeded methods
+      holder.req.parseparams = nil
+      holder.req.addheader = nil
+      holder.tmp = nil
+      collectgarbage("collect")
       -- Handle request if no body present
-      local f = loadfile(self.handlers.handler)
-      local next = self.handlers.next
-      local success, err = pcall(function() f()(req, res, next, self.handlers.opts) end)
-      if not success then
-       print("Error occured during execution: " .. err)
-       res.statuscode = 500
-       res:send("500 - Internal Server Error: " .. err)
+      requestbuffer:push(holder)
+      if not (requestbuffer:isbusy()) then
+       processrequest(requestbuffer:next())
+      else
+       print("Stored request into buffer. Memory is " .. node.heap())
       end
-      --FIXME collectgarbage("collect")
      else
       -- If we are sending a form, we need to parse it
-      if req.headers["content-type"] == "application/x-www-form-urlencoded" then
-       req:parseparams(body)
+      if holder.req.headers["content-type"] == "application/x-www-form-urlencoded" then
+       holder.req:parseparams(body)
+       holder.req.parseparams = nil
+       holder.req.addheader = nil
+       holder.tmp = nil
       end
       -- Change receive hook to body parser if body present
-      conn:on("receive", ondata)
-      ondata(conn, body)
+      local f = loadfile("http_getondata.lc")
+      local onreceive = f()(requestbuffer, processrequest)
+      f = nil
+      conn:on("receive", onreceive)
+      onreceive(conn, body)
       onreceive = nil
+      collectgarbage("collect")
      end
      break
     end
-    parsedlines = parsedlines + 1
+    holder.tmp.parsedlines = holder.tmp.parsedlines + 1
    end
   end
-
-  conn:on("receive", onreceive)
-  conn:on("disconnection", ondisconnect)
  end
  
- 
- local httphandler = function(self)
+ local getondisconnect = function(holder)
   return function(conn)
-   executerequest(self, conn)
-   
+   print("Finished chain for element " .. holder.id)
+   holder.req = nil
+   holder.res = nil
+   requestbuffer:remove(holder.id)
+   if (requestbuffer:hasnext()) then
+    processrequest(requestbuffer:next())
+   end
+   collectgarbage("collect")
+   print("Garbage Collector is sweeping. Available memory is now " .. node.heap() .. " bytes.")
   end
  end
 
@@ -149,39 +135,18 @@ do
  ------------------------------------------------------------------------------
  local srv
  local createserver = function()
-  local hdlr = {}
-  hdlr.use = function(self, handler, opts)
-   if self.handlers == nil then
-    self.handlers = { handler = handler, opts = opts }
-   else
-    local tmp = self.handlers
-    while not (tmp == nil) do
-     print("In handler " .. tmp.handler)
-     local next = tmp.next
-     if next == nil then
-      print("Next handler " .. handler .. " will be after " .. tmp.handler)
-      tmp.next = { handler = handler, opts = opts }
-     end
-     tmp = next
-    end
-   end
-   collectgarbage("collect")
-  end
-  -- Listen
-  hdlr.listen = function(self, port)
-   -- Last handler returns 404 - NOT FOUND
-   self:use("http_default_handler.lc")
-   -- Forget about "use" method after listening
-   self.use = nil
-   if srv then srv:close()
-   end
-   srv = net.createServer(net.TCP, 5)
-   srv:listen(port, httphandler(hdlr))
-   print("Server listening on port " .. tostring(port))
-   collectgarbage("collect")
-   print("Available memory is " .. node.heap() .. " bytes.")
-  end
   
+  local f = loadfile('http_prototypes.lc')
+  reqprototype, resprototype = f()
+  f = loadfile('espress_init.lc')
+  local hdlr = f()(getonreceive, getondisconnect)
+  handlers = hdlr.handlers
+  f = loadfile('http_request_processor.lc')
+  processrequest = f()(handlers)
+  f = loadfile('http_request_buffer.lc')
+  requestbuffer = f()
+  f = nil
+  collectgarbage("collect")
   return hdlr
  end
 

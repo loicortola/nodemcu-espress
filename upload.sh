@@ -1,7 +1,12 @@
 #/bin/sh
 nodemcu-tool upload espress.lua --port $1 --compile --optimize
+nodemcu-tool upload espress_init.lua --port $1 --compile --optimize
 nodemcu-tool upload http_default_handler.lua --port $1 --compile --optimize
+nodemcu-tool upload http_getondata.lua --port $1 --compile --optimize
+nodemcu-tool upload http_prototypes.lua --port $1 --compile --optimize
 nodemcu-tool upload http_request.lua --port $1 --compile --optimize
+nodemcu-tool upload http_request_buffer.lua --port $1 --compile --optimize
+nodemcu-tool upload http_request_processor.lua --port $1 --compile --optimize
 nodemcu-tool upload http_response_send.lua --port $1 --compile --optimize
 nodemcu-tool upload http_response_sendfile.lua --port $1 --compile --optimize
 nodemcu-tool upload http_response.lua --port $1 --compile --optimize

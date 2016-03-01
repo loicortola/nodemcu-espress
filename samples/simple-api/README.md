@@ -7,12 +7,18 @@ This sample serves all endpoints in the routes/ folder, secured by an api-key.
 Upload the following files to your NodeMCU:
 
 1. Espress base files
- * plugins/auth_api_key.lc => auth_api_key.lc
  * espress.lc  
+ * espress_init.lc  
  * http_default_handler.lc  
+ * http_getondata.lc
+ * http_prototypes.lc
  * http_request.lc  
+ * http_request_buffer.lc
+ * http_request_processor.lc  
  * http_response.lc  
  * http_response_send.lc
+ * http_response_sendfile.lc  
+ * plugins/auth_api_key.lc => auth_api_key.lc
  * plugins/routes_auto.lc => routes_auto.lc
  
 2. Relevant Espress status-codes

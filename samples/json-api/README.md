@@ -9,10 +9,16 @@ Upload the following files to your NodeMCU:
 
 1. Espress base files
  * espress.lc  
+ * espress_init.lc  
  * http_default_handler.lc  
+ * http_getondata.lc
+ * http_prototypes.lc
  * http_request.lc  
+ * http_request_buffer.lc
+ * http_request_processor.lc  
  * http_response.lc  
  * http_response_send.lc
+ * http_response_sendfile.lc  
  * plugins/routes_auto.lc => routes_auto.lc
  
 2. Relevant Espress status-codes

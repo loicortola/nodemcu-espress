@@ -1,6 +1,6 @@
-# Sample simple-static
+# Sample heavy-website
 
-This sample serves all files in the static/ folder.
+This sample is meant to demonstrate the power of espress in a request-heavy environment.
 
 
 ## Procedure
@@ -29,7 +29,7 @@ Upload the following files to your NodeMCU:
 3. Sample files
  * init**.lua**  
  * server.lc  
- * routes/register.post.lua => routes/register.post.lc  
+ * static/register.post.lua => routes/register.post.lc  
  * static/register.html  => static/register.html  
  * static/register_success.html  => static/register_success.html  
  * static/favicon.ico => static/favicon.ico  

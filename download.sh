@@ -1,10 +1,15 @@
 #/bin/bash
 nodemcu-tool download espress.lc
+nodemcu-tool download espress_init.lc
 nodemcu-tool download http_default_handler.lc
+nodemcu-tool download http_getondata.lc
+nodemcu-tool download http_prototypes.lc
 nodemcu-tool download http_request.lc
+nodemcu-tool download http_request_buffer.lc
+nodemcu-tool download http_request_processor.lc
+nodemcu-tool download http_response.lc
 nodemcu-tool download http_response_send.lc
 nodemcu-tool download http_response_sendfile.lc
-nodemcu-tool download http_response.lc
 nodemcu-tool download auth_api_key.lc
 nodemcu-tool download router.lc
 nodemcu-tool download routes_auto.lc

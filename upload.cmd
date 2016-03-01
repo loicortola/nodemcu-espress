@@ -1,6 +1,11 @@
 @call nodemcu-tool upload espress.lua --compile --optimize
+@call nodemcu-tool upload espress_init.lua --compile --optimize
 @call nodemcu-tool upload http_default_handler.lua --compile --optimize
+@call nodemcu-tool upload http_getondata.lua --compile --optimize
+@call nodemcu-tool upload http_prototypes.lua --compile --optimize
 @call nodemcu-tool upload http_request.lua --compile --optimize
+@call nodemcu-tool upload http_request_buffer.lua --compile --optimize
+@call nodemcu-tool upload http_request_processor.lua --compile --optimize
 @call nodemcu-tool upload http_response_send.lua --compile --optimize
 @call nodemcu-tool upload http_response_sendfile.lua --compile --optimize
 @call nodemcu-tool upload http_response.lua --compile --optimize

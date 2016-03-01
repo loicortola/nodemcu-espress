@@ -1,6 +1,6 @@
 wifi.setmode(wifi.STATION)
 -- Replace here with your wifi config
-wifi.sta.config("DarthVader", "loicortola")
+wifi.sta.config("ssid", "key")
 wifi.sta.connect()
 print("---------------------------")
 print("Connecting to Wifi")

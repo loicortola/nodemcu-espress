@@ -2,7 +2,7 @@
 -- send file
 ------------------------------------------------------------------------------
 return function(res, filename, status)
- local buffersize = 512
+ local buffersize = 256
  local offset = 0
  local buf
  local more = true
@@ -15,6 +15,7 @@ return function(res, filename, status)
   --   Write response headers
   res:addheader("Server", "NodeMCU")
   res:addheader("Transfer-Encoding", "chunked")
+  res:addheader("Cache-Control", "private, max-age=31536000")
   for key, value in pairs(res.headers) do
    -- send header
    buf = buf .. key .. ": " .. value .. "\r\n"
@@ -24,7 +25,7 @@ return function(res, filename, status)
 
   -- Send file body
   local function sendnextchunk()
-   collectgarbage("collect")
+   tmr.wdclr()
    file.seek("set", offset)
    buf = file.read(buffersize)
    res.conn:send(("%X\r\n"):format(#buf) .. buf .. "\r\n")
