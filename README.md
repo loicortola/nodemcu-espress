@@ -10,10 +10,12 @@ Features:
  * Easy service of static pages
  * Easy custom webservices with your own lua code
  * GET, POST PUT, DELETE, OPTIONS, HEAD supported
+ * Handles gzipped files (.gz)
  * Querystring, headers, method, form and body parser
  * Completely customizable. Make your own plugin work in a few seconds.
  * Inspired by Node.js Express
- * ESP8266 friendly : Can take between 10 and 20 Kb of memory for typical setups
+ * ESP8266 friendly : Can take between 15 and 20 Kb of memory for typical setups
+ * Good at handling concurrent-requests (request buffer implemented)
  
 ## Setup
 
@@ -166,6 +168,21 @@ static/index.html
 static/style.css  
 static/logo.png  
 static/script.js  
+
+Static files will be routed to http://host/  
+For instance http://host/logo.png will load the static/logo.png file
+
+##### Static Gzip files (webcontent)
+Your webpages, css, images, and static content should be stored as static/filename.ext.gz onto the NodeMCU filesystem.  
+
+For instance:  
+static/index.html.gz  
+static/style.css.gz  
+static/logo.png.gz  
+static/script.js.gz  
+
+Static Gzip files will be routed to http://host/  
+For instance http://host/logo.png will load the static/logo.png.gz file
 
 ##### Dynamic content
 Your API scripts should be stored as routes/path.method.lc (example: routes/foo.post.lc, routes/bar.get.lc ...) and should hold the following function:  

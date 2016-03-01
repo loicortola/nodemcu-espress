@@ -1,7 +1,6 @@
-# Sample heavy-website
+# Sample simple-static-gzip
 
-This sample is meant to demonstrate the power of espress in a request-heavy environment.
-
+This sample is meant to demonstrate how gzip behaves when sending gzip files.
 
 ## Procedure
 Upload the following files to your NodeMCU:
@@ -29,16 +28,9 @@ Upload the following files to your NodeMCU:
 3. Sample files
  * init**.lua**  
  * server.lc  
- * static/audi.jpg  => static/audi.jpg
- * static/bmw.jpg  => static/bmw.jpg
- * static/cars.html  => static/cars.html
- * static/chevrolet.jpg  => static/chevrolet.jpg
- * static/corvette.jpg  => static/corvette.jpg
- * static/favicon.ico  => static/favicon.ico
- * static/honda.jpg  => static/honda.jpg
- * static/mustang.jpg  => static/mustang.jpg
- * static/peugeot.jpg  => static/peugeot.jpg
- 
+ * static/hello.html.gz  => static/hello.html.gz
+ * static/favicon.ico.gz  => static/favicon.ico.gz
+
 Replace the wifi settings with your own in **init.lua**
 
 Access the http://IP/register.html file.
