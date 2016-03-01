@@ -1,18 +1,18 @@
 #/bin/bash
-nodemcu-tool download espress.lc
-nodemcu-tool download espress_init.lc
-nodemcu-tool download http_default_handler.lc
-nodemcu-tool download http_getondata.lc
-nodemcu-tool download http_prototypes.lc
-nodemcu-tool download http_request.lc
-nodemcu-tool download http_request_buffer.lc
-nodemcu-tool download http_request_processor.lc
-nodemcu-tool download http_response.lc
-nodemcu-tool download http_response_send.lc
-nodemcu-tool download http_response_sendfile.lc
-nodemcu-tool download auth_api_key.lc
-nodemcu-tool download router.lc
-nodemcu-tool download routes_auto.lc
+nodemcu-tool download espress.lc --port $1
+nodemcu-tool download espress_init.lc --port $1
+nodemcu-tool download http_default_handler.lc --port $1
+nodemcu-tool download http_getondata.lc --port $1
+nodemcu-tool download http_prototypes.lc --port $1
+nodemcu-tool download http_request.lc --port $1
+nodemcu-tool download http_request_buffer.lc --port $1
+nodemcu-tool download http_request_processor.lc --port $1
+nodemcu-tool download http_response.lc --port $1
+nodemcu-tool download http_response_send.lc --port $1
+nodemcu-tool download http_response_sendfile.lc --port $1
+nodemcu-tool download auth_api_key.lc --port $1
+nodemcu-tool download router.lc --port $1
+nodemcu-tool download routes_auto.lc --port $1
 nodemcu-tool download http-200
 nodemcu-tool download http-400
 nodemcu-tool download http-401
