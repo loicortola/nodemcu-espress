@@ -5,17 +5,22 @@ Version: 0.4.1
 Ultra-Lightweight and modular Node.js like http server for NodeMCU.  
 Emphasizes code-as-a-config.
 
+Why:
+If you want a complete, performant, and über-simple HTTP Server to serve websites or your HTTP API from your NodeMCU, this project is for you. Get started in a few seconds and take a look at the many samples ready for use (forms, API, simple websites, etc...).
+
+
 Features:  
  * ApiKey authentication module
- * Easy service of static pages
+ * Easy service of static pages for your website
  * Easy custom webservices with your own lua code
  * GET, POST PUT, DELETE, OPTIONS, HEAD supported
  * Handles gzipped files (.gz)
- * Querystring, headers, method, form and body parser
+ * Querystring, headers, method, form and body parser, easily accessible via req.params, req.headers, req.method...
  * Completely customizable. Make your own plugin work in a few seconds.
- * Inspired by Node.js Express
+ * Inspired by Node.js Express API
  * ESP8266 friendly : Can take between 15 and 20 Kb of memory for typical setups
  * Good at handling concurrent-requests (request buffer implemented)
+ * Makes coffee, and cookies
  
 ## Setup
 
