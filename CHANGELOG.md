@@ -1,5 +1,10 @@
 ### Espress Changelog
 
+#### 0.4.2
+ Changes:
+ * Fixed mime-type not found error
+ * Added gif in default mime types
+
 #### 0.4.1
  Changes:
  * Fixed Api-Key and bugs
