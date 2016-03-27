@@ -5,11 +5,17 @@ Version: 0.4.1
 Ultra-Lightweight and modular Node.js like http server for NodeMCU.  
 Emphasizes code-as-a-config.
 
-Why:
-If you want a complete, performant, and über-simple HTTP Server to serve websites or your HTTP API from your NodeMCU, this project is for you. Get started in a few seconds and take a look at the many samples ready for use (forms, API, simple websites, etc...).
+## Why are you here?
+You love NodeMCU.  
+You don't want to learn the HTTP Protocol **by heart**.  
+You want a **performant**, über-**simple** yet exhaustive HTTP Server to serve **websites**.  
+Or maybe make your own **custom API** with **webservices** to execute **remote commands**.  
 
+It only gets **a few seconds** to get started.  
+You can read this document to learn the API, or just **copy-paste** one of the many **samples** ready for you in the appropriate section (forms, API, simple websites, etc...).  
+Can't find an example for your use case? Open an issue and let's figure it out together.
 
-Features:  
+## Features
  * ApiKey authentication module
  * Easy service of static pages for your website
  * Easy custom webservices with your own lua code
