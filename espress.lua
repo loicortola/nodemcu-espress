@@ -94,11 +94,10 @@ do
        holder.req:parseparams(body)
        holder.req.parseparams = nil
        holder.req.addheader = nil
-       holder.tmp = nil
       end
       -- Change receive hook to body parser if body present
       local f = loadfile("http_getondata.lc")
-      local onreceive = f()(requestbuffer, processrequest)
+      local onreceive = f()(requestbuffer, processrequest)(holder)
       f = nil
       conn:on("receive", onreceive)
       onreceive(conn, body)

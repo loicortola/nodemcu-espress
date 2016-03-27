@@ -5,19 +5,24 @@ do
    h[name] = value
   end,
   parseparams = function(req, content)
+   local params = req.params
+   -- sometimes, params can be passed instead of request.
+   if req.params == nil then
+    params = req
+   end
    for name, value in string.gfind(content, "([^&=]+)=([^&=]+)") do
-    if not (req.params[name] == nil) then
+    if not (params[name] == nil) then
      -- If params already declared, put it in an array
-     if not (type(req.params[name]) == "table") then
+     if not (type(params[name]) == "table") then
       -- At first, save previous and create array
-      local previous = req.params[name]
-      req.params[name] = {}
-      table.insert(req.params[name], previous)
+      local previous = params[name]
+      params[name] = {}
+      table.insert(params[name], previous)
      end
      -- If already an array, simply push into it
-     table.insert(req.params[name], value)
+     table.insert(params[name], value)
     else
-     req.params[name] = value
+     params[name] = value
     end
    end
   end

@@ -15,10 +15,12 @@ local handler = function(req, res, next, opts)
   local f = loadfile(next.handler)
   f()(req, res, next.next, next.opts)
   f = nil
- elseif req.headers["api-key"] == nil then
+ elseif req.headers["x-api-key"] == nil then
+  print("Api-Key header is not set. Api-Key is required")
   res.statuscode = 400
   res:send()
  else
+  print("Api-Key header is not valid.")
   res.statuscode = 401
   res:send()
  end

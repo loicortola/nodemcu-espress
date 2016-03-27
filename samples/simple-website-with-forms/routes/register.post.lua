@@ -1,4 +1,5 @@
 return function(req, res)
+ print("req.params are " .. req.params)
  print("Username is " .. req.params.username)
  print("Password is " .. req.params.password)
  local rights = ""

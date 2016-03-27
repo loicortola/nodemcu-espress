@@ -3,8 +3,8 @@ return function(req, res)
  if req.params.question then
   local question = req.params.question
   print("Question is " .. question)
-  res:send("{answer:\"Thanks for your input.\"}")
+  res:send("{\"answer\":\"Thanks for your input.\"}")
  else
-  res:send("{answer:\"I have not received any question.\"}")
+  res:send("{\"answer\":\"I have not received any question.\"}")
  end
 end
