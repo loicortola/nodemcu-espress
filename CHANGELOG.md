@@ -1,5 +1,10 @@
 ### Espress Changelog
 
+#### 0.4.1
+ Changes:
+ * Fixed Api-Key and bugs
+ * Updated upload scripts
+
 #### 0.4.0
  Changes:
  * Implemented request buffer for multiple request-handling
