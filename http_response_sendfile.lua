@@ -6,6 +6,7 @@ return function(res, filename, status)
  local offset = 0
  local buf
  local more = true
+ tmr.wdclr()
  print("Opening file " .. filename)
  if not file.open(filename, "r") then
   -- Try gzip

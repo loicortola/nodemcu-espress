@@ -36,6 +36,7 @@ nodemcu-tool upload status-codes/http-503 --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-css --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-html --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-jpg --port $1 --baud $baud
+nodemcu-tool upload mime-types/type-gif --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-js --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-json --port $1 --baud $baud
 nodemcu-tool upload mime-types/type-png --port $1 --baud $baud

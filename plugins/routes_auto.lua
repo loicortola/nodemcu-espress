@@ -26,9 +26,13 @@ local handler = function(req, res, next, opts)
   f = nil
  else
   -- [GET] /index.html will return static/index.html
-  local f = loadfile("type-" .. getextension(url))
-  res:addheader("Content-Type", f())
-  f = nil
+  local type = loadfile("type-" .. getextension(url))
+  if type == nil then
+   type = "octet-stream"
+  else
+   type = type() 
+  end
+  res:addheader("Content-Type", type)
   res:sendfile("static" .. url)
  end
 end
