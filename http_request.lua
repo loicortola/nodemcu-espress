@@ -5,7 +5,7 @@ return function(prototype, line)
  -- Here, we parse the first line
  -- NB: just version 1.1 assumed
  local _, method, url, querystring, url_no_qs, params
- 
+
  -- parse method and url
  _, _, method, url = line:find("^([A-Z]+) (.-) HTTP/1.1$")
  -- parse querystring
@@ -21,6 +21,17 @@ return function(prototype, line)
  end
  -- remove modules from cache
  package.loaded['http_request'] = nil
+
+ local destructor = function(req)
+   req.method = nil
+   req.body = nil
+   req.headers = nil
+   req.addheader = nil
+   req.parseparams = nil
+   req.url = nil
+   req.params = nil
+ end
+
  -- Return request object
  return {
   method = method,
@@ -29,6 +40,7 @@ return function(prototype, line)
   addheader = prototype.addheader,
   parseparams = prototype.parseparams,
   url = url,
-  params = params
+  params = params,
+  destructor = destructor
  }
 end

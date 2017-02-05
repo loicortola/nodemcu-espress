@@ -19,6 +19,23 @@ do
  -- Request buffer
  local requestbuffer
 
+ local getondisconnect = function(holder)
+  return function(res, conn)
+   tmr.wdclr()
+   print("Finished chain for element " .. holder.id)
+   requestbuffer:remove(holder.id)
+   holder:destructor()
+   holder = nil
+   if (requestbuffer:hasnext()) then
+    processrequest(requestbuffer:next())
+   end
+   collectgarbage("collect")
+   if (node ~= nil) then
+    print("Garbage Collector is sweeping. Available memory is now " .. node.heap() .. " bytes.")
+   end
+  end
+ end
+
  local getonreceive = function(holder)
 
   holder.tmp = {}
@@ -50,7 +67,7 @@ do
      holder.req = f()(reqprototype, line)
      f = nil
      local f = loadfile('http_response.lc')
-     holder.res = f()(resprototype, conn)
+     holder.res = f()(resprototype, conn, getondisconnect(holder))
      f = nil
      collectgarbage("collect")
     elseif #line > 0 then
@@ -86,7 +103,7 @@ do
       if not (requestbuffer:isbusy()) then
        processrequest(requestbuffer:next())
       else
-       print("Stored request into buffer. Memory is " .. node.heap())
+       print("Stored request into buffer." .. ((node ~= nil) and ' Available memory: ' .. node.heap() .. ' bytes' or ''))
       end
      else
       -- If we are sending a form, we need to parse it
@@ -111,21 +128,6 @@ do
   end
  end
 
- local getondisconnect = function(holder)
-  return function(conn)
-   tmr.wdclr()
-   print("Finished chain for element " .. holder.id)
-   holder.req = nil
-   holder.res = nil
-   requestbuffer:remove(holder.id)
-   if (requestbuffer:hasnext()) then
-    processrequest(requestbuffer:next())
-   end
-   collectgarbage("collect")
-   print("Garbage Collector is sweeping. Available memory is now " .. node.heap() .. " bytes.")
-  end
- end
-
  ------------------------------------------------------------------------------
  -- HTTP server
  ------------------------------------------------------------------------------
@@ -134,7 +136,7 @@ do
   local f = loadfile('http_prototypes.lc')
   reqprototype, resprototype = f()
   f = loadfile('espress_init.lc')
-  local hdlr = f()(getonreceive, getondisconnect)
+  local hdlr = f()(getonreceive)
   handlers = hdlr.handlers
   f = loadfile('http_request_processor.lc')
   processrequest = f()(handlers)

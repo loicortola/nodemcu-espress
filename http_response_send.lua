@@ -21,9 +21,18 @@ return function(res, data, status)
   buf = buf .. data
   buf = buf .. "\r\n"
  end
- -- send 
+ -- send
  conn:send(buf)
  buf = nil
- -- close connection
- conn:close()
+ -- Remove default sent callback
+ conn:on("sent", nil)
+ -- Send last chunk and close connection
+ conn:on("sent", function(conn)
+   -- Close connection
+   conn:on('sent', nil)
+   -- Call termination callback
+   res:close()
+ end
+ )
+ conn:send("0\r\n\r\n")
 end

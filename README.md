@@ -1,6 +1,6 @@
 # espress NodeMCU http-server
 
-Version: 0.4.2
+Version: 1.5.0
 
 Ultra-Lightweight and modular Node.js like http server for NodeMCU.  
 Emphasizes code-as-a-config.
@@ -15,6 +15,10 @@ It only gets **a few seconds** to get started.
 You can read this document to learn the API, or just **copy-paste** one of the many **samples** ready for you in the appropriate section (forms, API, simple websites, etc...).  
 Can't find an example for your use case? Open an issue and let's figure it out together.
 
+## NodeMCU Firmware versions supported
+Tested under 2.0.0 and beyond.
+For NodeMCU 1.x, please check previous releases.
+
 ## Features
  * ApiKey authentication module
  * Easy service of static pages for your website
@@ -27,11 +31,11 @@ Can't find an example for your use case? Open an issue and let's figure it out t
  * ESP8266 friendly : Can take between 15 and 20 Kb of memory for typical setups
  * Good at handling concurrent-requests (request buffer implemented)
  * Makes coffee, and cookies
- 
+
 ## Setup
 
 Transfer the relevant content with any upload tool (we recommend using https://www.npmjs.com/package/nodemcu-tool).  
-A binary pre-compiled version is available in bin/ folder. 
+A binary pre-compiled version is available in bin/ folder.
 
 ## Recipes
 
@@ -57,7 +61,7 @@ A binary pre-compiled version is available in bin/ folder.
   method,  
   body  
  }
- 
+
 ##### req.params
  Holds the querystring or the forms parameters.
  Example: for http://host/api/computers?id=1234  
@@ -65,24 +69,24 @@ A binary pre-compiled version is available in bin/ folder.
    local id = tonumber(req.params["id"]) -- 1234
  ```
  If forms or querystring have multiple values for the same key, req.params.field will be a table with all values stored within.
- 
+
 ##### req.headers
  Holds the request headers.  
  N.B.: header name is stored in lower-case
  ```lua
    local contenttype = req.headers["content-type"] -- "application/json"
  ```
- 
+
 ##### req.method
  Contains the request method: "GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"
- 
+
 ##### req.body
  Contains the body parsed into a string.  
  N.B.: You have the liberty of parsing this string to whatever you feel comfortable with. It is a voluntary choice not to parse it into JSON or other formats.
  Sample parsers for form and json will be available soon in the samples.  
- 
+
 #### Response
- 
+
  Example :
  res = {
   conn,  
@@ -93,79 +97,79 @@ A binary pre-compiled version is available in bin/ folder.
   headers,  
   addheader  
  }
- 
+
 ##### res.conn
  The http connection socket. Please refer to NodeMCU's API for more details
-  
+
 ##### res.send
  Send payload in response and close connection after. The payload is sent in one chunk and length should not exceed 1460 bytes.
  If payload is bigger than 1460, please use res.sendfile instead.
- 
+
  Example:  
  ```lua
   local content = "{message: \"Hello world\"}"
   res:send(content)
  ```
- 
+
 ##### res.sendfile
- Send static file in response and close connection after. The payload is sent into multiple chunks of 1460 bytes, and should be used to process all static content. 
- 
+ Send static file in response and close connection after. The payload is sent into multiple chunks of 1460 bytes, and should be used to process all static content.
+
  Example:
  ```lua
    res:sendfile("static/404-not-found.html")
  ```
- 
+
 ##### res.sendredirect
- Redirect user to another URL 
- 
+ Redirect user to another URL
+
  Example:
  ```lua
    res:sendredirect("/registration_success.html")
  ```
- 
+
 ##### res.statuscode
  Sets the response http statuscode.
-  
+
  Example:
  ```lua
    res.statuscode = 102
  ```
- 
+
 ##### res.headers
  Contains the response headers. Use for read-only. To add or edit response headers, rather use res.addheader
- 
+
 ##### res.addheader
  Add or edit response header.
- 
+
  Example:  
  ```lua
    res.addheader("Content-Type", "application/json")
  ```
- 
- 
+
+
 
 ### Plugins
 Available plugins are:  
  * auth_api_key : implementation for an Api-Key header-based authentication
  * routes_auto : automatic routing using your /static and /routes sub-folders (recommended)
  * routes_custom : to perform advanced routing
- 
+
 #### Plugin auth-api-key
  This plugin will intercept all requests and look for an X-Api-Key header OR an &api-key parameter in querystring.  
  Valid options for this plugin are:  
  * apikey: the desired apikey to secure  
  * includes: a uri prefix to which auth will be enabled (will exclude all others)  
  * excludes: a uri prefix to which auth will be bypassed (will include all others)  
- 
+
  ```lua
   server:use("auth_api_key.lc", {apikey = "1234-abcd", includes = "/api"})
  ```
- 
+
  The following responses can be expected :  
  * **400 BAD-REQUEST** if neither the X-Api-Key header nor the api-key parameter were provided  
  * **401 UNAUTHORIZED** if the provided value does not match the one in the options **{apikey = "1234-abcd"}**    
  * Forward to next handler if everything went well
- 
+
 #### Plugin routes-auto
 The plugin will automatically parse the request url and lookup for the corresponding files depending on their name.
 
@@ -207,7 +211,7 @@ Your API scripts should be stored as routes/path.method.lc (example: routes/foo.
  ```
 
 The scripts will be available under the following uri: host/api/path  
-For instance: 
+For instance:
 routes/foo.get.lc <=> [GET] http://host/api/foo  
 routes/bar.post.lc <=> [POST] http://host/api/bar  
 
@@ -222,7 +226,7 @@ Declarations are made this way:
  router.get("/computers", "routes/computers.get.lc")
  router.post("/user/register", "routes/register.get.lc")
  router.delete("/user/employee", "routes/employee-revoke.delete.lc")
- return router.handler 
+ return router.handler
  ```
 
 Save your own script with your own routes and load it using server:use()
@@ -252,6 +256,6 @@ SOFTWARE.
 
 
 
-## Contribute 
+## Contribute
 Any form of contribution is welcome: Issues, Pull-Requests, Feature requests.  
 Twitter: **@Loicortola**

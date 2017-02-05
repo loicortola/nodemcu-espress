@@ -11,7 +11,6 @@ tmr.alarm(1, 1000, 1, function()
   tmr.stop(1)
   print("MAC address is: " .. wifi.ap.getmac())
   print("IP is " .. wifi.sta.getip())
-  print(node.heap())
   dofile("server.lc")
  end
 end)

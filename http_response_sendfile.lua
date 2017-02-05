@@ -54,9 +54,17 @@ return function(res, filename, status)
    buffersize = nil
    offset = nil
    sendnextchunk = nil
-   -- Close connection
+   -- Remove default sent callback
+   conn:on("sent", nil)
+   -- Send last chunk and close connection
+   conn:on("sent", function(conn)
+     -- Close connection
+     conn:on('sent', nil)
+     -- Call termination callback
+     res:close()
+   end
+   )
    conn:send("0\r\n\r\n")
-   conn:close()
   end
  end)
 end
